@@ -13,8 +13,19 @@ var params = {
     count: 20
 };
 
+var Spotify = require('node-spotify-api');
+var spotify_client = new Spotify({
+    id:'a11147c410fa4a329732f1b8d33a7468',
+    secret:'3ebe3f75ccec48b18dbbab56b5272688'
+});
+
 var command = process.argv[2];
 var value = process.argv[3];
+
+for(i=3; i<process.argv.length; i++){
+    value += " " + process.argv[i];
+}
+
 
 switch(command){
     case "my-tweets":
@@ -45,3 +56,19 @@ function showTweets(){
     });
 }
 
+function songInfo(){
+    if(!value){
+       value = 'The Sign'; 
+    }
+    spotify_client.search({type: 'track', query: value, limit: 1}, function(err,data){
+        if(err){
+            return console.log('Error!');
+        }
+
+        console.log(data.tracks.items[0].artists[0].name);
+        console.log(data.tracks.items[0].name);
+        console.log(data.tracks.items[0].preview_url);
+        console.log(data.tracks.items[0].album.name);
+
+    });
+}
