@@ -42,6 +42,9 @@ function switchCommand(){
         case "do-what-it-says":
             action();
             break;
+        default:
+            console.log(command + ' is not a command');
+            break;
     }
 }
 
