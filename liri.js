@@ -49,8 +49,9 @@ function showTweets(){
     client.get('statuses/user_timeline', params, function(error, tweets, response) {
         if (!error) {
             // console.log(tweets[0].text);
+            console.log('20 Tweets \n' + '-------------------');
             tweets.forEach(function(element) {
-                console.log(element.created_at + '\n' + element.text );
+                console.log(element.created_at + '\n' + element.text + '\n-------------------------------------' );
             });
         }
         else{
@@ -73,11 +74,11 @@ function songInfo(){
             return console.log('Error!');
         }
 
-        console.log('Artists: ' + data.tracks.items[0].artists[0].name);
-        console.log('Song: ' + data.tracks.items[0].name);
-        console.log('Preview Link: ' + data.tracks.items[0].preview_url);
-        console.log('Album: ' + data.tracks.items[0].album.name);
-
+        var songData = data.tracks.items[0];
+        console.log('Artists: ' + songData.artists[0].name + '\n' 
+                    + 'Song: ' + songData.name + '\n' 
+                    + 'Preview Link: ' + songData.preview_url + '\n' 
+                    + 'Album: ' + songData.album.name);
     });
 }
 
@@ -96,24 +97,16 @@ function movieInfo(){
             console.log('Error!')
         }
         else{
-            console.log(body);
-
             var movieData = JSON.parse(body);
 
-            console.log('Title: ' + movieData.Title);
-            console.log('Release Year: ' + movieData.Year);
-
-            console.log('IMDB Rating: ' + movieData.imdbRating);
-            //Rotten Tomatoes
-            console.log(movieData.Ratings[1].Source + ': ' + movieData.Ratings[1].Value);
-            //Country Produced
-            console.log('Country: ' + movieData.Country);
-            //Language
-            console.log('Language: ' + movieData.Language);
-            //Plot
-            console.log('Plot: ' + movieData.Plot);
-            //Actors
-            console.log('Actors: ' + movieData.Actors);
+            console.log('Title: ' + movieData.Title + '\n'
+                        + 'Release Year: ' + movieData.Year + '\n'
+                        + 'IMDB Rating: ' + movieData.imdbRating + '\n'
+                        + movieData.Ratings[1].Source + ': ' + movieData.Ratings[1].Value + '\n'
+                        + 'Country: ' + movieData.Country + '\n'
+                        + 'Language: ' + movieData.Language + '\n'
+                        + 'Plot: ' + movieData.Plot + '\n'
+                        + 'Actors: ' + movieData.Actors);
         }
     });
 }
