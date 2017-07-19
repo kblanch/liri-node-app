@@ -21,22 +21,28 @@ var spotify_client = new Spotify({
 
 var request = require('request');
 
+var fs = require('fs');
+
 var command = process.argv[2];
 var value = process.argv[3];
 
-switch(command){
-    case "my-tweets":
-        showTweets();
-        break;
-    case "spotify-this-song":
-        songInfo();
-        break;
-    case "movie-this":
-        movieInfo();
-        break;
-    case "do-what-it-says":
-        action();
-        break;
+switchCommand();
+
+function switchCommand(){
+    switch(command){
+        case "my-tweets":
+            showTweets();
+            break;
+        case "spotify-this-song":
+            songInfo();
+            break;
+        case "movie-this":
+            movieInfo();
+            break;
+        case "do-what-it-says":
+            action();
+            break;
+    }
 }
 
 function showTweets(){
@@ -109,5 +115,20 @@ function movieInfo(){
             //Actors
             console.log('Actors: ' + movieData.Actors);
         }
+    });
+}
+
+function action(){
+    fs.readFile('random.txt','utf8',function(err,data){
+        if(err){
+            return console.log('Error!');
+        }
+
+        var text = data.split(',');
+        command = text[0];
+        value = text[1].replace(/\"/g, "");
+        //value = text[1].substr(1).slice(0,-1);
+
+        switchCommand();
     });
 }
