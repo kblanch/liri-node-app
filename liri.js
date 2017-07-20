@@ -69,11 +69,11 @@ function songInfo(){
     }
 
     if(!value){
-       value = 'The Sign'; 
+       value = 'The Sign Ace of Base'; 
     }
 
-    spotify_client.search({type: 'track', query: value, limit: 1}, function(err,data){
-        if(err){
+    spotify_client.search({type: 'track', query: value, limit: 1}, function(error,data){
+        if(error){
             return console.log('Error!');
         }
 
@@ -115,8 +115,8 @@ function movieInfo(){
 }
 
 function action(){
-    fs.readFile('random.txt','utf8',function(err,data){
-        if(err){
+    fs.readFile('random.txt','utf8',function(error,data){
+        if(error){
             return console.log('Error!');
         }
 
