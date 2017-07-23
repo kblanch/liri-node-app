@@ -50,15 +50,18 @@ function switchCommand(){
 
 function showTweets(){
     client.get('statuses/user_timeline', params, function(error, tweets, response) {
-        if (!error) {
-            // console.log(tweets[0].text);
-            console.log('20 Tweets \n' + '-------------------');
-            tweets.forEach(function(element) {
-                console.log(element.created_at + '\n' + element.text + '\n-------------------------------------' );
-            });
+        if (error) {
+            console.log(error);
         }
         else{
-            console.log('Error!');
+            // console.log(tweets[0].text);
+            var outputTweets = '20 Tweets \n' + '-------------------';
+            tweets.forEach(function(element) {
+                outputTweets += '\n' + element.created_at + '\n' + element.text + '\n-------------------------------------';
+            });
+
+            console.log(outputTweets + '\n');
+            logFile(outputTweets + '\n');
         }
     });
 }
@@ -74,14 +77,19 @@ function songInfo(){
 
     spotify_client.search({type: 'track', query: value, limit: 1}, function(error,data){
         if(error){
-            return console.log('Error!');
+            return console.log(error);
         }
+        else{
+            var songData = data.tracks.items[0];
 
-        var songData = data.tracks.items[0];
-        console.log('Artists: ' + songData.artists[0].name + '\n' 
-                    + 'Song: ' + songData.name + '\n' 
-                    + 'Preview Link: ' + songData.preview_url + '\n' 
-                    + 'Album: ' + songData.album.name);
+            var outputSong = '\nArtists: ' + songData.artists[0].name + '\n' 
+                        + 'Song: ' + songData.name + '\n' 
+                        + 'Preview Link: ' + songData.preview_url + '\n' 
+                        + 'Album: ' + songData.album.name + '\n';
+            
+            console.log(outputSong);
+            logFile(outputSong);
+        }
     });
 }
 
@@ -97,19 +105,31 @@ function movieInfo(){
     var queryURL = "http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=40e9cece";
     request(queryURL, function(error,response,body){
         if(error){
-            console.log('Error!')
+            console.log(error);
         }
         else{
             var movieData = JSON.parse(body);
+            var rottenTomatoesRating = 'Not Available';
+            
+            if(movieData.Ratings){
+                movieData.Ratings.forEach(function(element){
+                    if(element.Source === 'Rotten Tomatoes'){
+                        rottenTomatoesRating = element.Value;
+                    }
+                });
+            }
 
-            console.log('Title: ' + movieData.Title + '\n'
+            var outputMovie = '\nTitle: ' + movieData.Title + '\n'
                         + 'Release Year: ' + movieData.Year + '\n'
                         + 'IMDB Rating: ' + movieData.imdbRating + '\n'
-                        + movieData.Ratings[1].Source + ': ' + movieData.Ratings[1].Value + '\n'
+                        + 'Rotten Tomatoes: ' + rottenTomatoesRating + '\n'
                         + 'Country: ' + movieData.Country + '\n'
                         + 'Language: ' + movieData.Language + '\n'
                         + 'Plot: ' + movieData.Plot + '\n'
-                        + 'Actors: ' + movieData.Actors);
+                        + 'Actors: ' + movieData.Actors + '\n';
+
+            console.log(outputMovie);
+            logFile(outputMovie);
         }
     });
 }
@@ -117,14 +137,26 @@ function movieInfo(){
 function action(){
     fs.readFile('random.txt','utf8',function(error,data){
         if(error){
-            return console.log('Error!');
+            return console.log(error);
         }
+        else{
+            var text = data.split(',');
+            command = text[0];
+            value = text[1].replace(/\"/g, "");
+            //value = text[1].substr(1).slice(0,-1);
 
-        var text = data.split(',');
-        command = text[0];
-        value = text[1].replace(/\"/g, "");
-        //value = text[1].substr(1).slice(0,-1);
+            switchCommand();
+        }
+    });
+}
 
-        switchCommand();
+function logFile(newData){
+    fs.appendFile('log.txt',newData, function(error){
+        if(error){
+            console.log(error);
+        }
+        else{
+            console.log('Saved');
+        }
     });
 }
